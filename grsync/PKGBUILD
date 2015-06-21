@@ -1,0 +1,23 @@
+pkgname=grsync
+pkgver=1.2.5
+pkgrel=1
+pkgdesc="GTK GUI for rsync"
+arch=('x86_64')
+url="http://www.opbyte.it/grsync"
+license=('GPL')
+depends=('gtk2' 'rsync')
+makedepends=('gettext' 'intltool')
+install=("$pkgname.install")
+source=(http://www.opbyte.it/release/grsync-$pkgver.tar.gz)
+sha512sums=('68000d729d8c15ac439fb8b66df80892c8df3acf8497635836b3be585ba3028a95d158afe6ca63976f8d893af2da209b567e1ff61a6e008dd16e498d83882e9f')
+
+build() {
+  cd $srcdir/grsync-$pkgver
+  [ $NOEXTRACT -eq 1 ] || LDFLAGS=-lm ./configure --prefix=/usr --disable-unity
+  make
+}
+
+package() {
+  cd $srcdir/grsync-$pkgver
+  make DESTDIR=$pkgdir install
+}

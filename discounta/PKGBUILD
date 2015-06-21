@@ -1,0 +1,28 @@
+pkgname=discount
+pkgver=2.1.8
+pkgrel=1
+pkgdesc="A Markdown implementation written in C"
+arch=('x86_64')
+url="http://www.pell.portland.or.us/~orc/Code/discount/"
+license=('custom:BSD')
+provide=('markdown')
+source=("https://github.com/Orc/${pkgname}/archive/v$pkgver.tar.gz"
+        "no-ldconfig.patch")
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  sed -e "s/m 444/m 644/g" -i configure.inc
+  patch -p1 -i "$srcdir/no-ldconfig.patch"
+  ./configure.sh --prefix=/usr --enable-all-features --with-fenced-code --shared
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  mkdir -p $pkgdir/usr/{bin,include,lib}
+  make DESTDIR="$pkgdir" install.everything
+  install -Dm644 COPYRIGHT "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+sha512sums=('1b2aa4bd5be5b3dadb36a5510acfe71f794a60ee12f3222546a0f07a9df298617fa04c3b82a5e93459b376bd475e1c60d6f5ee2241868a3aaf34ffd7ac7c3811'
+            '656d516f3ea09ca8ff1124abb5aa9d4c1cfc8a1b2d5b2404fa2a196ecb94daf5b762f010ecb37b8ade5730809f6f1fbc7b8934deabbf9430397c5e7aa06a86ac')
