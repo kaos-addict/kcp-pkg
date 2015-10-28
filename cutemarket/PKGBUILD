@@ -18,14 +18,14 @@ prepare() {
 
 build() {
   cd $srcdir/$_realname-$pkgver
-  qmake
-  make || true #  the first make run might fail
+  qmake-qt5
+#  make || true #  the first make run might fail
   make
 }
 
 package() {
   cd $srcdir/$_realname-$pkgver
   make INSTALL_ROOT="$pkgdir" install
-  mkdir -p "$pkgdir"/usr/bin
+#  mkdir -p "$pkgdir"/usr/bin
   #ln -s ../lib/qt/bin/cutemarked "$pkgdir"/usr/bin/cutemarked
 } 
