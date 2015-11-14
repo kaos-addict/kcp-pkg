@@ -1,0 +1,50 @@
+pkgname=spacefm-next
+_pkgname=spacefm
+pkgver=20151018
+pkgrel=1
+pkgdesc='Scriptable and multi-panel tabbed file manager - git branch next'
+arch=('x86_64')
+url='http://ignorantguru.github.com/spacefm/'
+license=('LGPL')
+install=${_pkgname}.install
+provides=('spacefm' 'spacefm-installer')
+conflict=('spacefm-installer')
+depends=('cairo' 'hicolor-icon-theme' 'desktop-file-utils' 'gtk3' 'startup-notification')
+makedepends=('intltool' 'gettext')
+optdepends=(
+    'lsof: device processes'
+    'kdesu: perform as root functionality'
+    'startup-notification: display applications startup notifications'
+    'fuse: 
+     libgphoto2: 
+     ifuse...: mount virtual filesystems'
+)
+source=("${_pkgname}::git+https://github.com/IgnorantGuru/${_pkgname}.git#branch=next")
+sha512sums=('SKIP')
+
+pkgver() {
+    cd "${_pkgname}"
+    git log -1 --format="%cd" --date=short |tr -d -
+}
+
+prepare() {
+    cd "${_pkgname}"
+    ./configure --prefix=/usr --with-gtk3 --disable-video-thumbnails
+}
+
+build() {
+    cd "${_pkgname}"
+    make -s
+}
+
+check() {
+    cd "${_pkgname}"
+    make check
+}
+
+package() {
+    cd "${_pkgname}"
+    make DESTDIR="${pkgdir}" install
+    # Copy also the web-installer:
+    install -m 744 ${_pkgname}-installer "${pkgdir}"/usr/bin/${_pkgname}-installer
+}
